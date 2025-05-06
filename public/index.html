@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to Excel Converter | Professional Data Conversion Tool</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --success: #10b981;
+            --error: #ef4444;
+            --background: #f8fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--background);
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .container {
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .logo i {
+            font-size: 32px;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+        }
+
+        .auth-section {
+            margin-bottom: 2rem;
+        }
+
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--text-primary);
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .google-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary);
+        }
+
+        .google-btn i {
+            margin-right: 0.8rem;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .upload-section {
+            display: none;
+        }
+
+        .file-input-container {
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            background: #f8fafc;
+        }
+
+        .file-input-container:hover {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .file-input-container.dragover {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .file-input-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .file-input-label i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .file-input-label span {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .submit-btn {
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(79, 70, 229, 0.3);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .status {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .success {
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
+
+        .error {
+            background: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
+        .info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .file-info i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 2rem;
+                margin: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">
+                <i class="fas fa-file-excel"></i>
+            </div>
+            <h1>XML to Excel Converter</h1>
+            <p class="subtitle">Transform your XML data into professional Excel spreadsheets</p>
+        </div>
+
+        <div class="auth-section" id="authSection">
+            <button id="authBtn" class="google-btn">
+                <i class="fab fa-google"></i>
+                Connect with Google Drive
+            </button>
+        </div>
+
+        <div class="upload-section" id="uploadSection">
+            <div class="file-input-container" id="dropZone">
+                <label class="file-input-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Drag & drop your XML file here<br>or click to browse</span>
+                    <input type="file" id="xmlFile" class="file-input" accept=".xml" required>
+                </label>
+            </div>
+            <div class="file-info" id="fileInfo">
+                <i class="fas fa-file"></i>
+                <span id="fileName"></span>
+            </div>
+            <button type="submit" id="submitBtn" class="submit-btn" disabled>
+                Convert & Upload to Drive
+            </button>
+        </div>
+
+        <div id="status" class="status"></div>
+        <div id="spinner" class="spinner"></div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const uploadSection = document.getElementById('uploadSection');
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('xmlFile');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusDiv = document.getElementById('status');
+        const spinner = document.getElementById('spinner');
+
+        // Check authentication status
+        const urlParams = new URLSearchParams(window.location.search);
+        const authStatus = urlParams.get('auth');
+
+        if (authStatus === 'success') {
+            showStatus('Successfully connected to Google Drive!', 'success');
+            authSection.style.display = 'none';
+            uploadSection.style.display = 'block';
+        } else if (authStatus === 'error') {
+            showStatus('Authentication failed. Please try again.', 'error');
+        }
+
+        // Event Listeners
+        document.getElementById('authBtn').addEventListener('click', () => {
+            window.location.href = '/auth';
+        });
+
+        // Drag and drop functionality
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                handleFile(files[0]);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (file.type !== 'text/xml' && !file.name.endsWith('.xml')) {
+                showStatus('Please select an XML file', 'error');
+                return;
+            }
+
+            fileName.textContent = file.name;
+            fileInfo.style.display = 'block';
+            submitBtn.disabled = false;
+        }
+
+        submitBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!fileInput.files.length) {
+                showStatus('Please select a file', 'error');
+                return;
+            }
+
+            hideStatus();
+            showSpinner();
+            submitBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('xmlFile', fileInput.files[0]);
+
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                hideSpinner();
+                submitBtn.disabled = false;
+
+                if (response.ok) {
+                    showStatus(
+                        `File converted and uploaded successfully!<br>
+                        <span style="font-size:0.9em;color:var(--text-secondary);">Google Drive File ID:</span><br>
+                        <code style="background:#f1f5f9;padding:0.2em 0.4em;border-radius:4px;">${result.fileId}</code>`,
+                        'success'
+                    );
+                    fileInfo.style.display = 'none';
+                    fileInput.value = '';
+                } else {
+                    showStatus(`Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                hideSpinner();
+                submitBtn.disabled = false;
+                showStatus('Error uploading file', 'error');
+                console.error('Error:', error);
+            }
+        });
+
+        // Helper functions
+        function showStatus(message, type) {
+            statusDiv.innerHTML = message;
+            statusDiv.className = `status ${type}`;
+            statusDiv.style.display = 'block';
+        }
+
+        function hideStatus() {
+            statusDiv.style.display = 'none';
+        }
+
+        function showSpinner() {
+            spinner.style.display = 'block';
+        }
+
+        function hideSpinner() {
+            spinner.style.display = 'none';
+        }
+    </script>
+</body>
+</html> 
