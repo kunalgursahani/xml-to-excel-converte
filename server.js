@@ -29,15 +29,15 @@ if (!fs.existsSync('uploads')) {
 
 // Google Drive setup
 const oauth2Client = new google.auth.OAuth2(
-    process.env.GOOGLE_CLIENT_ID,
-    process.env.GOOGLE_CLIENT_SECRET,
-    process.env.GOOGLE_REDIRECT_URI
+    process.env.GOOGLE_DRIVE_CLIENT_ID,
+    process.env.GOOGLE_DRIVE_CLIENT_SECRET,
+    process.env.GOOGLE_DRIVE_REDIRECT_URI
 );
 
 const drive = google.drive({ version: 'v3', auth: oauth2Client });
 
 // OAuth2 Routes
-app.get('/auth', (req, res) => {
+app.get('/auth/google', (req, res) => {
     const authUrl = oauth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: ['https://www.googleapis.com/auth/drive.file']
@@ -45,7 +45,7 @@ app.get('/auth', (req, res) => {
     res.redirect(authUrl);
 });
 
-app.get('/oauth2callback', async (req, res) => {
+app.get('/auth/google/callback', async (req, res) => {
     const { code } = req.query;
     try {
         const { tokens } = await oauth2Client.getToken(code);
