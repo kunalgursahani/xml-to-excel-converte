@@ -1,8 +1,33 @@
+# Dependencies
 node_modules/
+.venv/
 venv/
-.env
-*.pyc
 __pycache__/
+*.pyc
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
+*.log
+
+# IDE and OS files
 .DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Test files
+test.xlsx
+test.xml
+
+# Upload directory
 uploads/
-*.log 
+
+# Package files
+package-lock.json 
